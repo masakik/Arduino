@@ -1,7 +1,28 @@
 /*
   RGB Fading
-  Make rgb red fade one by one
-  using a table to change pwm to eye perceptible power
+
+  Programa para piscar os leds rgb fazendo fading in e out um por um.
+
+  O led rgb tem o catodo comum entao a logica ficou invertida: 
+  quando a saida está em zero o led acende e quando está em 1 (5v) o led apaga.
+
+  O led rgb foi ligado aos pinos 3,5 e 6 respecticamente.
+  O pino 4 foi pulado pois nao tem suporte a pwm nele.
+
+  A primiera tablea de 32 valores deixou as mudancas noa suaves. A tabela de 256 ficou bom
+
+  Aparentemente próximo ao apagado tem um problema de que o primeiro acendimento não é suave. 
+  Os próximos tem transições suaves como deve ser.
+
+  Primeiro tentou-se fazer uma conta de adequacao do brilho usando math mas o uso de tabela é muito mais simples.
+
+  A utilizacao de pgmspace para deixar a tabela na memoria flash parece ter problemas com o for ao contrário.
+  Tem de fazer mais testes.
+
+  Por enquanto esta usando milis como base de tempo
+
+  Autor: Masaki
+  Data: 6/2017
 
 */
 //#include <avr/pgmspace.h>
@@ -76,38 +97,5 @@ void loop() {
 
 
 }
-
-
-//    for (i = 255; i >= 0; i--) {
-//    analogWrite(red_pin, 255-(int)&br[i]);
-//    delay(30);
-//  }
-
-//  for (i = 0; i < 32; i++) {
-//    analogWrite(red_pin, 255 - table[i]);
-//    Serial.println(table[i]);
-//    delay(tempo);
-//  }
-//  for (i = 31; i >= 0; i--) {
-//    analogWrite(red_pin, 255 - table[i]);
-//    Serial.println(table[i]);
-//    delay(tempo);
-//  }
-//  delay(1000);
-
-
-//
-// // digitalWrite(red_pin, on);
-//  analogWrite(red_pin,200);
-//  delay(tempo);
-//
-//  digitalWrite(red_pin, off);
-//  digitalWrite(green_pin, on);
-//  delay(tempo);
-//
-//  digitalWrite(green_pin, off);
-//  digitalWrite(blue_pin, on);
-//  delay(tempo);
-
 
 
