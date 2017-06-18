@@ -3,7 +3,7 @@
 
   Programa para piscar os leds rgb fazendo fading in e out um por um.
 
-  O led rgb tem o catodo comum entao a logica ficou invertida: 
+  O led rgb tem o catodo comum entao a logica ficou invertida:
   quando a saida está em zero o led acende e quando está em 1 (5v) o led apaga.
 
   O led rgb foi ligado aos pinos 3,5 e 6 respecticamente.
@@ -11,7 +11,7 @@
 
   A primiera tablea de 32 valores deixou as mudancas noa suaves. A tabela de 256 ficou bom
 
-  Aparentemente próximo ao apagado tem um problema de que o primeiro acendimento não é suave. 
+  Aparentemente próximo ao apagado tem um problema de que o primeiro acendimento não é suave.
   Os próximos tem transições suaves como deve ser.
 
   Primeiro tentou-se fazer uma conta de adequacao do brilho usando math mas o uso de tabela é muito mais simples.
@@ -29,11 +29,12 @@
 //#include <math.h>
 
 int red_pin = 3, green_pin = 5, blue_pin = 6;
-int on = 0, off = 1;
-int tempo = 200;
-int  i;
-const uint8_t table[] = {
-  0, 1, 2, 3, 4, 5, 7, 9,
+int tempo = 4000; // tempo toal de fade in e out em ms
+
+
+
+const uint8_t table[32] = {
+  0,  1,  2,  3,  4,  5,  7,  9,
   12, 15, 18, 22, 27, 32, 38, 44,
   51, 58, 67, 76, 86, 96, 108, 120,
   134, 148, 163, 180, 197, 216, 235, 255
@@ -58,44 +59,42 @@ const uint8_t _ledTable[256] = {
   219, 221, 224, 226, 228, 231, 233, 235, 238, 240, 243, 245, 248, 250, 253, 255
 };
 
-// the setup function runs once when you press reset or power the board
 void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
   pinMode(red_pin, OUTPUT);
   pinMode(green_pin, OUTPUT);
   pinMode(blue_pin, OUTPUT);
+
   Serial.begin(9600);
-  digitalWrite(blue_pin, off);
-  digitalWrite(green_pin, off);
-  digitalWrite(red_pin, off);
+
+  analogWrite(blue_pin, 255);
+  analogWrite(green_pin, 255);
+  analogWrite(red_pin, 255);
+
   Serial.println("Inicio");
+  Serial.println((int) round( (float) tempo / 2 / 256));
 }
 
-// the loop function runs over and over again forever
 void loop() {
+  fade_rgb(tempo);
+}
 
+void fade_rgb(int tempo) {
+  int  i, j;
   int rgb[] = {red_pin, green_pin, blue_pin};
-  int j;
 
-  for (j = 0; j < 3; j++) {
-    // Serial.println("Sobe");
-    for (i = 0; i <= 255; i++) {
+  for (j = 0; j < 3; j++) { // loop para r, g e b
+    for (i = 0; i <= 255; i++) { // fade in
       analogWrite(rgb[j], 255 - _ledTable[i]);
       Serial.println(_ledTable[i]);
-      delay(30);
+      delay((int) round( (float) tempo / 2 / 256));
     }
 
-    // Serial.println("Desce");
-    for (i = 255; i >= 0; i--) {
+    for (i = 255; i >= 0; i--) { // fade out
       analogWrite(rgb[j], 255 - _ledTable[i]);
       Serial.println(_ledTable[i]);
-      delay(30);
-      //Serial.println(i);
+      delay((int) round( (float) tempo / 2 / 256));
     }
   }
-
-
 }
 
 
